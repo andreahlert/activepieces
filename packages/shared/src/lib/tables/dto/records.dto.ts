@@ -50,9 +50,16 @@ export const ListRecordsRequest = Type.Object({
 
 export type ListRecordsRequest = Omit<Static<typeof ListRecordsRequest>, 'cursor'> & { cursor: Cursor | undefined }
 
-export const DeleteRecordsRequest = Type.Object({
-    ids: Type.Array(Type.String()),
-})
+export const DeleteRecordsRequest = Type.Union([
+    Type.Object({
+        ids: Type.Array(Type.String()),
+        tableId: Type.Optional(Type.String()),
+    }),
+    Type.Object({
+        excludedIds: Type.Array(Type.String()),
+        tableId: Type.String(),
+    }),
+])
 
 export type DeleteRecordsRequest = Static<typeof DeleteRecordsRequest>
 

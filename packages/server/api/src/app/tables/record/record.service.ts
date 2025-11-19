@@ -17,7 +17,7 @@ import {
     UpdateRecordRequest,
 } from '@activepieces/shared'
 import { FastifyBaseLogger } from 'fastify'
-import { EntityManager, In } from 'typeorm'
+import { EntityManager, In, Not } from 'typeorm'
 import { repoFactory } from '../../core/db/repo-factory'
 import { transaction } from '../../core/db/transaction'
 import { system } from '../../helper/system/system'
@@ -235,35 +235,71 @@ export const recordService = {
 
     async delete({
         ids,
+        excludedIds,
+        tableId,
         projectId,
     }: DeleteParams): Promise<PopulatedRecord[]> {
+        if (isNil(excludedIds) && (!ids || ids.length === 0)) {
+            return []
+        }
+
+        if (tableId) {
+            const whereCondition: Record<string, unknown> = {
+                projectId,
+                tableId,
+            }
+
+            if (!isNil(excludedIds)) {
+                if (excludedIds.length > 0) {
+                    whereCondition.id = Not(In(excludedIds))
+                }
+            }
+            else {
+                whereCondition.id = In(ids!)
+            }
+
+            const records = await recordRepo().find({
+                where: whereCondition,
+                relations: ['cells'],
+            })
+            if (records.length === 0) {
+                return []
+            }
+
+            await recordRepo().delete(whereCondition)
+
+            return formatRecordsAndFetchField({ records, tableId, projectId })
+        }
+
+        const idsToUse = ids!
         const firstRecord = await recordRepo().findOne({
-            where: { id: ids[0], projectId },
+            where: { id: idsToUse[0]!, projectId },
             select: ['tableId'],
         })
         if (isNil(firstRecord)) {
             throw new ActivepiecesError({
                 code: ErrorCode.ENTITY_NOT_FOUND,
-                params: { entityType: 'Record', entityId: ids[0] },
+                params: { entityType: 'Record', entityId: idsToUse[0] },
             })
         }
+        const resolvedTableId = firstRecord.tableId
 
         const records = await recordRepo().find({
-            where: { id: In(ids), projectId, tableId: firstRecord.tableId },
+            where: { id: In(idsToUse), projectId, tableId: resolvedTableId },
             relations: ['cells'],
         })
-
-        await recordRepo().delete({
-            id: In(ids),
-            projectId,
-            tableId: firstRecord.tableId,
-        })
-
         if (records.length === 0) {
             return []
         }
 
-        return formatRecordsAndFetchField({ records, tableId: firstRecord.tableId, projectId })
+        await recordRepo().delete({
+            id: In(idsToUse),
+            projectId,
+            tableId: resolvedTableId,
+        })
+
+
+        return formatRecordsAndFetchField({ records, tableId: resolvedTableId, projectId })
     },
 
     async triggerWebhooks({
@@ -348,7 +384,9 @@ type UpdateParams = {
 }
 
 type DeleteParams = {
-    ids: string[]
+    ids?: string[]
+    excludedIds?: string[]
+    tableId?: string
     projectId: string
 }
 
@@ -486,7 +524,7 @@ function doesCellValueMatchFilters(cell: Cell, filters: Filter[]): boolean {
 
 }
 
-const numberFilterValidator = ({ cellValue, filterValue, cb }: { cellValue: unknown, filterValue: string, cb: ({ cellValue, filterValue }: { cellValue: number, filterValue: number }) => boolean }) => {
+const numberFilterValidator = ({ cellValue, filterValue, cb }: { cellValue: unknown, filterValue: string, cb: ({ cellValue, filterValue }: { cellValue: number, filterValue: number }) => boolean }): boolean => {
     if (typeof cellValue === 'string' || typeof cellValue === 'number') {
         const cv = parseFloat(cellValue as string)
         const fv = parseFloat(filterValue)

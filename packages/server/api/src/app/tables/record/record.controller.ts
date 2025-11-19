@@ -65,8 +65,8 @@ export const recordController: FastifyPluginAsyncTypebox = async (fastify) => {
 
     fastify.delete('/', DeleteRecordRequest, async (request, reply) => {
         const deletedRecords = await recordService.delete({
-            ids: request.body.ids,
             projectId: request.principal.projectId,
+            ...request.body,
         })
         await reply.status(StatusCodes.NO_CONTENT).send()
         await recordSideEffects(fastify.log).handleRecordsEvent({
