@@ -6,9 +6,9 @@ import { platformService } from '../platform/platform.service'
 import { projectService } from '../project/project-service'
 import { system } from './system/system'
 
-const telemetryEnabled = system.getBoolean(AppSystemProp.TELEMETRY_ENABLED)
+const telemetryEnabled = false // Disabled for privacy
 
-const analytics = new Analytics({ writeKey: '42TtMD2Fh9PEIcDO2CagCGFmtoPwOmqK' })
+const analytics = new Analytics({ writeKey: '' }) // Disabled write key
 
 export const telemetry = (log: FastifyBaseLogger) => ({
     async identify(user: User, identity: UserIdentity, projectId: ProjectId): Promise<void> {
