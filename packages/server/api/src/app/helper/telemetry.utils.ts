@@ -8,7 +8,18 @@ import { system } from './system/system'
 
 const telemetryEnabled = false // Disabled for privacy
 
-const analytics = new Analytics({ writeKey: '' }) // Disabled write key
+// Mock Analytics object to prevent errors when telemetry is disabled
+const analytics = telemetryEnabled
+    ? new Analytics({ writeKey: '42TtMD2Fh9PEIcDO2CagCGFmtoPwOmqK' })
+    : {
+        identify: () => Promise.resolve(),
+        track: () => Promise.resolve(),
+        group: () => Promise.resolve(),
+        alias: () => Promise.resolve(),
+        page: () => Promise.resolve(),
+        screen: () => Promise.resolve(),
+        closeAndFlush: () => Promise.resolve(),
+    } as any
 
 export const telemetry = (log: FastifyBaseLogger) => ({
     async identify(user: User, identity: UserIdentity, projectId: ProjectId): Promise<void> {
