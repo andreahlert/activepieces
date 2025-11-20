@@ -113,7 +113,7 @@ export const OPEN_SOURCE_PLAN: PlatformPlanWithOnlyLimits = {
     manageProjectsEnabled: false,
     projectRolesEnabled: false,
     customDomainsEnabled: false,
-    apiKeysEnabled: false,
+    apiKeysEnabled: true,
     ssoEnabled: false,
     stripeCustomerId: undefined,
     stripeSubscriptionId: undefined,
