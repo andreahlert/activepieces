@@ -1,0 +1,32 @@
+[phases.setup]
+nixPkgs = [
+    "nodejs-20_x",
+    "bun",
+    "python3",
+    "gcc",
+    "gnumake",
+    "git",
+    "poppler_utils",
+    "nginx"
+]
+
+[phases.install]
+cmds = [
+    "npm install -g node-gyp pm2 typescript@4.9.4",
+    "cd /usr/src && bun install isolated-vm@5.0.1",
+    "bun install --frozen-lockfile"
+]
+
+[phases.build]
+cmds = [
+    "npx nx run-many --target=build --projects=react-ui,server-api --configuration production --parallel=2",
+    "cd dist/packages/server/api && bun install --production --frozen-lockfile"
+]
+
+[start]
+cmd = "./docker-entrypoint.sh"
+
+[variables]
+NODE_ENV = "production"
+NX_DAEMON = "false"
+NX_NO_CLOUD = "true"

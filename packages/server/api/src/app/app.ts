@@ -334,8 +334,16 @@ export const setupApp = async (app: FastifyInstance): Promise<FastifyInstance> =
             await app.register(federatedAuthModule)
             await app.register(otpModule)
             await app.register(platformProjectModule)
+            await app.register(signingKeyModule)
+            await app.register(oauthAppModule)
+            await app.register(gitRepoModule)
+            await app.register(projectReleaseModule)
+            await app.register(enterpriseLocalAuthnModule)
             setPlatformOAuthService(platformOAuth2Service(app.log))
+            projectHooks.set(projectEnterpriseHooks)
             eventsHooks.set(auditLogService)
+            flagHooks.set(enterpriseFlagsHooks)
+            systemJobHandlers.registerJobHandler(SystemJobName.ISSUES_SUMMARY, (data) => alertsService(app.log).runScheduledReminderJob(data))
             break
     }
 

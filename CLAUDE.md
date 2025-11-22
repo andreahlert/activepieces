@@ -4,7 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Activepieces is an open-source AI automation platform (alternative to Zapier) built with TypeScript. The system is designed around a plugin architecture called "pieces" (280+ integrations) that are also available as MCP (Model Context Protocol) servers for use with LLMs.
+**AEX Heimdall** is a customized fork of Activepieces, an open-source AI automation platform (alternative to Zapier) built with TypeScript. This fork includes significant customizations:
+
+- **Repository**: https://github.com/andreahlert/aex-heimdall
+- **Rebranding**: UI and theme rebranded from Activepieces to AEX Heimdall
+- **EE Features Enabled**: Enterprise Edition features enabled for COMMUNITY edition
+- **Telemetry**: Telemetry disabled with protection mechanisms
+- **API Keys**: API Keys feature enabled for open source plan
+
+The system is designed around a plugin architecture called "pieces" (280+ integrations) that are also available as MCP (Model Context Protocol) servers for use with LLMs.
 
 ## Monorepo Structure (Nx + Bun)
 
@@ -362,3 +370,51 @@ Key environment variables (defined in `AppSystemProp` and `WorkerSystemProp`):
 - `SENTRY_DSN`: Error tracking endpoint
 
 Refer to `packages/server/shared/src/lib/system/app-system-prop.ts` for full list.
+
+## Fork-Specific: Enabling EE Features for COMMUNITY Edition
+
+This fork has been customized to enable Enterprise Edition features in the COMMUNITY edition. When enabling new EE features, follow this checklist:
+
+1. **Update the plan limits** in `packages/ee/shared/src/lib/billing/index.ts`
+   - Add the feature flag to `OPEN_SOURCE_PLAN` (e.g., `apiKeysEnabled: true`)
+
+2. **Register the module** in `packages/server/api/src/app/app.ts`
+   - Add the module to the `switch (edition)` statement under `case ApEdition.COMMUNITY`
+
+3. **Register entities** in `packages/server/api/src/app/database/database-connection.ts`
+   - Add EE entities to `getEntities()` function under `case ApEdition.COMMUNITY`
+
+4. **Update migration guards** in relevant migration files
+   - Change migration guards from `ApEdition.CLOUD` or `ApEdition.ENTERPRISE` to include `ApEdition.COMMUNITY`
+   - Example: `if ([ApEdition.CLOUD, ApEdition.ENTERPRISE, ApEdition.COMMUNITY].includes(edition))`
+
+**Reference Files:**
+- `EE_TABLES_CREATION_SUMMARY.md`: Documents all EE tables and their structure
+- `COMMUNITY_FEATURES_ANALYSIS.md`: Analysis of enabled community features
+- Recent commits: `3eaa4ae9b8` (enable all EE features), `74efc0fecc` (API Keys)
+
+## Deployment
+
+This fork is configured for Railway deployment:
+
+- **Public URL**: https://aex-heimdall.up.railway.app
+- **Private Network**: aex-heimdall.railway.internal
+
+- **Build Configuration**: `nixpacks.toml` defines the build process
+  - Uses Node.js 20.x, Bun, Python3, and system dependencies
+  - Builds `react-ui` and `server-api` in parallel
+  - Production build output in `dist/packages/server/api`
+
+- **Deployment Files**:
+  - `railway.toml`: Railway-specific configuration
+  - `docker-entrypoint.sh`: Container startup script
+  - Environment variables required: `DATABASE_URL`, `REDIS_URL`, etc.
+
+**Build Command**:
+```bash
+npx nx run-many --target=build --projects=react-ui,server-api --configuration production --parallel=2
+```
+
+**Network Configuration**:
+- Use `aex-heimdall.railway.internal` for internal service-to-service communication within Railway
+- Use `https://aex-heimdall.up.railway.app` for external/public access
