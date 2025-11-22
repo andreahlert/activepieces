@@ -6,7 +6,7 @@ export class AddApiKeys1701716639135 implements MigrationInterface {
     name = 'AddApiKeys1701716639135'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE])) {
+        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE, ApEdition.COMMUNITY])) {
             return
         }
         await queryRunner.query(`
@@ -28,7 +28,7 @@ export class AddApiKeys1701716639135 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE])) {
+        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE, ApEdition.COMMUNITY])) {
             return
         }
         await queryRunner.query(`
