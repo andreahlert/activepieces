@@ -9,7 +9,7 @@ export class AddShowActivityLogToPlatform1708861032399 implements MigrationInter
     name = 'AddShowActivityLogToPlatform1708861032399'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE])) {
+        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE, ApEdition.COMMUNITY])) {
             return
         }
         await queryRunner.query(`
@@ -31,7 +31,7 @@ export class AddShowActivityLogToPlatform1708861032399 implements MigrationInter
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE])) {
+        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE, ApEdition.COMMUNITY])) {
             return
         }
         await queryRunner.query(`

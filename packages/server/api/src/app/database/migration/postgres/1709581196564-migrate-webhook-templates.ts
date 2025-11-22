@@ -9,7 +9,7 @@ export class MigrateWebhookTemplate1709581196564 implements MigrationInterface {
     name = 'MigrateWebhookTemplate1709581196564'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE])) {
+        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE, ApEdition.COMMUNITY])) {
             return
         }
         log.info('MigrateWebhookTemplate1709581196564, started')
@@ -46,7 +46,7 @@ export class MigrateWebhookTemplate1709581196564 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE])) {
+        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE, ApEdition.COMMUNITY])) {
             return
         }
         log.info('rolling back MigrateWebhookTemplate1709581196564, started')

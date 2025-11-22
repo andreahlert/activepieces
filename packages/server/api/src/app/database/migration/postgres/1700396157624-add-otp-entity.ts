@@ -9,7 +9,7 @@ export class AddOtpEntity1700396157624 implements MigrationInterface {
     name = 'AddOtpEntity1700396157624'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE])) {
+        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE, ApEdition.COMMUNITY])) {
             return
         }
         await queryRunner.query(`
@@ -35,7 +35,7 @@ export class AddOtpEntity1700396157624 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE])) {
+        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE, ApEdition.COMMUNITY])) {
             return
         }
         await queryRunner.query(`

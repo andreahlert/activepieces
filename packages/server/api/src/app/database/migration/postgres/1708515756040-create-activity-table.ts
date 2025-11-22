@@ -9,7 +9,7 @@ export class CreateActivityTable1708515756040 implements MigrationInterface {
     name = 'CreateActivityTable1708515756040'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE])) {
+        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE, ApEdition.COMMUNITY])) {
             return
         }
         await queryRunner.query(`
@@ -36,7 +36,7 @@ export class CreateActivityTable1708515756040 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE])) {
+        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE, ApEdition.COMMUNITY])) {
             return
         }
         await queryRunner.query(`

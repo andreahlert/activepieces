@@ -322,6 +322,20 @@ export const setupApp = async (app: FastifyInstance): Promise<FastifyInstance> =
             await app.register(communityFlowTemplateModule)
             await app.register(queueMetricsModule)
             await app.register(apiKeyModule)
+            await app.register(auditEventModule)
+            await app.register(projectMemberModule)
+            await app.register(projectRoleModule)
+            await app.register(platformAnalyticsModule)
+            await app.register(platformFlowTemplateModule)
+            await app.register(platformPieceModule)
+            await app.register(customDomainModule)
+            await app.register(authnSsoSamlModule)
+            await app.register(managedAuthnModule)
+            await app.register(federatedAuthModule)
+            await app.register(otpModule)
+            await app.register(platformProjectModule)
+            setPlatformOAuthService(platformOAuth2Service(app.log))
+            eventsHooks.set(auditLogService)
             break
     }
 

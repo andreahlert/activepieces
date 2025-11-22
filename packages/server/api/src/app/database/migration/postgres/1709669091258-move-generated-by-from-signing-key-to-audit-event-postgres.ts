@@ -9,7 +9,7 @@ export class MoveGeneratedByFromSigningKeyToAuditEventPostgres1709669091258 impl
     name = 'MoveGeneratedByFromSigningKeyToAuditEventPostgres1709669091258'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE])) {
+        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE, ApEdition.COMMUNITY])) {
             return
         }
         const ids = await getAllSigningKeyIds(queryRunner)
@@ -30,7 +30,7 @@ export class MoveGeneratedByFromSigningKeyToAuditEventPostgres1709669091258 impl
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE])) {
+        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE, ApEdition.COMMUNITY])) {
             return
         }
         await queryRunner.query(`

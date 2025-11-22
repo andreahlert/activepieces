@@ -9,7 +9,7 @@ export class AddUserEmailToReferral1709500213947 implements MigrationInterface {
     name = 'AddUserEmailToReferral1709500213947'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE])) {
+        if (isNotOneOfTheseEditions([ApEdition.CLOUD, ApEdition.ENTERPRISE, ApEdition.COMMUNITY])) {
             return
         }
         await queryRunner.query(`

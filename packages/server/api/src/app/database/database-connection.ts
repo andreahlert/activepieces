@@ -132,6 +132,17 @@ function getEntities(): EntitySchema<unknown>[] {
         case ApEdition.COMMUNITY:
             entities.push(
                 ApiKeyEntity,
+                AuditEventEntity,
+                ProjectMemberEntity,
+                ProjectRoleEntity,
+                PlatformAnalyticsReportEntity,
+                FlowTemplateEntity,
+                CustomDomainEntity,
+                OtpEntity,
+                SigningKeyEntity,
+                OAuthAppEntity,
+                GitRepoEntity,
+                ProjectReleaseEntity,
             )
             break
         default:
