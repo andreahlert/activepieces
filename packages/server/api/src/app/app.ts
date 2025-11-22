@@ -321,6 +321,7 @@ export const setupApp = async (app: FastifyInstance): Promise<FastifyInstance> =
             await app.register(communityPiecesModule)
             await app.register(communityFlowTemplateModule)
             await app.register(queueMetricsModule)
+            await app.register(apiKeyModule)
             break
     }
 
