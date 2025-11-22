@@ -14,7 +14,7 @@ export default defineConfig(({ command, mode }) => {
   const AP_TITLE = isDev ? 'AEX Heimdall' : '${AP_APP_TITLE}';
 
   const AP_FAVICON = isDev
-    ? 'https://activepieces.com/favicon.ico'
+    ? '/favicon.svg'
     : '${AP_FAVICON_URL}';
 
   return {
